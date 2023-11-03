@@ -83,7 +83,7 @@ const eliminarOrden = async (req, res) => {
     const orden = await ordenModelo.findOne({});
 
     if (!orden) {
-      return res.status(404).json({ message: 'Carrito de compra no encontrado' });
+      return res.status(404).json({ message: 'Orden de compra no encontrada' });
     }
 
     orden.productos = [];
@@ -91,10 +91,10 @@ const eliminarOrden = async (req, res) => {
 
     await orden.save();
 
-    res.json({ message: 'Carrito de compra eliminado completamente' });
+    res.json({ message: 'Orden de compra eliminada' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Hubo un error al eliminar el carrito de compra' });
+    res.status(500).json({ message: 'Error al eliminar el carrito de compra' });
   }
 }
 
