@@ -18,6 +18,7 @@ app.use(body.json());
 app.use(require('./routes/index-routes'));
 app.use('/producto',require('./routes/producto-routes'));
 app.use('/categoria',require('./routes/categoria-routes'));
+app.use('/carrito',require('./routes/ordenCompra-routes'));
 
 
 app.listen(app.get('port'),()=>{

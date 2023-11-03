@@ -11,13 +11,25 @@ const getProducto_id = async (req, res) => {
     res.json(resultado_get_id);
 };
 
-const getProducto_categoria = async (req,res) => {
-    const id = req.params.id;
-    const resultado_producto_categoria = await productoModelo.find({categoria: id})
-    .populate('categoria');
-
-    res.json(resultado_producto_categoria);
-}
+const getProducto_categoria = async (req, res) => {
+    try {
+      const id = req.params.id;
+      const resultado_producto_categoria = await productoModelo
+        .find({ categoria: id })
+        .populate('categoria');
+  
+      if (resultado_producto_categoria.length === 0) {
+        return res.status(404).json({ message: 'No se encontraron productos para esta categoría.' });
+      }
+  
+      const nombreCategoria = resultado_producto_categoria[0].categoria.categoria;
+  
+      res.json({ categoria: nombreCategoria, productos: resultado_producto_categoria });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Ocurrió un error al obtener los productos por categoría.' });
+    }
+  };
 
 const crearProducto = async (req,res) => {
     const id_categoria = await categoriaModelo.findById(req.params.id);
