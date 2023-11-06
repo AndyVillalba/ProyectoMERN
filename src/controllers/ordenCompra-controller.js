@@ -2,8 +2,18 @@ const productoModelo = require('../models/producto-model');
 const ordenModelo = require('../models/ordenCompra-model');
 
 const mostrarCarrito = async (req, res) => {
+  try {
     const resultado_get_all = await ordenModelo.find();
+
+    if (!resultado_get_all || resultado_get_all.length === 0) {
+      return res.status(404).json({ mensaje: 'No hay productos en el carrito' });
+    }
+
     res.json(resultado_get_all);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
 }
 
 const agregarProductoOrden =  async (req, res) => {
