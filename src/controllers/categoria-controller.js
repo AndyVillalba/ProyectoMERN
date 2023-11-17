@@ -37,6 +37,7 @@ const getCategoria_id = async (req, res) => {
 };
 
 const crearCategoria = async (req,res) => {
+  //VALIDAR QUE NO EXISTA EL PRODUCTO
     try {
         const { tipo, categoria } = req.body;
     

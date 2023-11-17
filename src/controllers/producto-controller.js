@@ -1,5 +1,5 @@
 const productoModelo = require('../models/producto-model');
-const categoriaModelo = require('../models/categoria-model');
+//const categoriaModelo = require('../models/categoria-model');
 
 const getAllProducto = async (req, res) => {
   try {
@@ -64,15 +64,15 @@ const getProducto_categoria = async (req, res) => {
 
 const crearProducto = async (req,res) => {
   try{  
-  const id_categoria = await categoriaModelo.findById(req.params.id);
+  // const id_categoria = await categoriaModelo.findById(req.params.id);
 
-    if (!id_categoria) {
-      return res.status(404).json({ mensaje: 'Categoria no encontrada' });
-    }
+    // if (!id_categoria) {
+    //   return res.status(404).json({ mensaje: 'Categoria no encontrada' });
+    // }
     
-    const {nombre,descripcion,precio,categoria=id_categoria} = req.body;
+    const {nombre,descripcion,precio, categoria} = req.body;
     
-    const nuevoProducto = new productoModelo({nombre,descripcion,precio,categoria});
+    const nuevoProducto = new productoModelo({nombre,descripcion,precio, categoria});
     await nuevoProducto.save();
     res.json({status: "Producto Registrado"});
   }catch (error){
@@ -84,11 +84,12 @@ const crearProducto = async (req,res) => {
 
  const modificarProducto = async (req,res) => {
   try{
-    const { nombre,descripcion,precio } = req.body;
+    const { nombre,descripcion,precio, categoria } = req.body;
     const upProducto = {
         nombre,
         descripcion,
-        precio
+        precio,
+        categoria
     };
     await productoModelo.findByIdAndUpdate(req.params.id,upProducto);
     res.json({ status: "Producto Actualizado" });

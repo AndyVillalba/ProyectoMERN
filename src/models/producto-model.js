@@ -5,7 +5,7 @@ const productoSchema = new Schema({
     nombre: { type: String, required: true },
     descripcion: { type: String, required: true },
     precio: { type: Number, required: true },
-    categoria: {type: Schema.Types.ObjectId, ref: "Categorias"}
+    categoria: {type: String, required: false}
 });
 
 module.exports = mongoose.model('Producto', productoSchema);
