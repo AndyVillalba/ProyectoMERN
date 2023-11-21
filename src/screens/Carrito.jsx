@@ -1,7 +1,11 @@
 import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import React, { useEffect, useState } from 'react'
 import { consultarProductos, eliminarProducto, modificarCantidad, vaciarCarrito } from '../services/conector';
 import { DataGrid } from '@mui/x-data-grid';
+
 
 const Carrito = () => {
   // HOOOKS
@@ -13,7 +17,6 @@ const Carrito = () => {
 
   // FUNCTIONS
   const consultarApi = async () => {
-    console.log("CONSULTA");
     const newLista = await consultarProductos()
     setLista(newLista)
   }
@@ -82,17 +85,32 @@ const Carrito = () => {
     return (
       <Box>
         <Box sx={{marginTop: "5%", display: "flex", justifyContent: "space-between", flexDirection: "row", marginX: "25%"}}>
-          <Box></Box>
+         
           <Typography sx={{textAlign: "center", fontSize: 35}}>Carrito de compras</Typography>
           <Button 
             variant='contained' 
             color='error'
             onClick={() => handleVaciarCarrito()}
+            endIcon={<DeleteIcon />}
           >
             Vaciar Carrito
           </Button>
         </Box>
-        <Paper elevation={5} sx={{ marginX: "25%", marginTop: 5, alignSelf: "center"}}>
+        <Box sx={{marginTop:"5%",marginLeft:"15%"}}>
+          <Button  
+            component={Link} 
+            to="/producto" 
+            variant="contained" 
+            color="primary"
+            sx={{marginRight: "5%"}}
+            endIcon={<AddIcon />}
+          >
+            Agregar Producto
+          </Button>
+          
+          </Box>
+
+        <Paper elevation={5} sx={{ marginX: "15%", marginTop: 5, alignSelf: "center"}}>
           <DataGrid
             rows={lista.productos ? lista.productos : []}
             columns={columns}
