@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import { Typography, Button, Box, Paper } from '@mui/material';
-import { consultarCategoria, crearCategoria ,eliminarCategoria } from '../services/conector';
+import { consultarCategoria, crearCategoria, eliminarCategoria , modificarCategoria } from '../services/conector';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import EditIcon from '@mui/icons-material/Edit';
 
 const CategoriaFormulario = () => {
     const [categoriaDatos, setCategoriaDatos] = useState({
@@ -13,6 +13,8 @@ const CategoriaFormulario = () => {
     });
 
     const [lista, setLista] = useState([]);
+    const [editar, setEditar] = useState(false);
+    const [idCategoria, setCategoriaId] = useState(null);
 
     useEffect(() => {
         consultarApiCat()
@@ -23,6 +25,16 @@ const CategoriaFormulario = () => {
         setLista(newLista)
     }
 
+    const actualizarCategoria = async (categoriaDatos, idCategoria) => {
+        await modificarCategoria(categoriaDatos, idCategoria);
+        await consultarApiCat();
+        alert('Categoria Actualizada');
+        setCategoriaDatos({
+            tipo: '',
+            categoria: '',
+        });
+        setEditar(false);
+    };
 
     const handleChange = (e) => {
         setCategoriaDatos({ ...categoriaDatos, [e.target.name]: e.target.value });
@@ -31,21 +43,27 @@ const CategoriaFormulario = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!categoriaDatos.tipo || !categoriaDatos.categoria) {
-            console.error('Todos los campos son requeridos');
-            return;
+        if(editar){
+            await actualizarCategoria(categoriaDatos,idCategoria);
+        }else{
+            if (!categoriaDatos.tipo || !categoriaDatos.categoria) {
+                console.error('Todos los campos son requeridos');
+                return;
+            }
+    
+            try {
+                await crearCategoria(categoriaDatos).then(() => consultarApiCat())
+                alert("Categoria Registrada");
+                setCategoriaDatos({
+                    tipo: '',
+                    categoria: '',
+                });
+            } catch (error) {
+                alert("No se pudo registrar la categoria");
+            }
         }
 
-        try {
-            await crearCategoria(categoriaDatos).then(() => consultarApiCat())
-            alert("Categoria Registrada");
-            setCategoriaDatos({
-                tipo: '',
-                categoria: '',
-            });
-        } catch (error) {
-            alert("No se pudo registrar la categoria");
-        }
+        
     };
 
     const handleEliminarCategoria = async (id) => {
@@ -53,11 +71,20 @@ const CategoriaFormulario = () => {
     }
 
     const handleClick = () => {
-        window.location.href = '/';
+        window.location.href = '/producto';
+    };
+
+    const handleEditarCategoria = (categoria) => {
+        setCategoriaDatos({
+            tipo: categoria.tipo,
+            categoria: categoria.categoria,
+        });
+        setEditar(true);
+        setCategoriaId(categoria.id);
     };
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 200 },
+        { field: 'id', headerName: 'ID', width: 212 },
         {
             field: 'tipo',
             headerName: 'Tipo',
@@ -71,16 +98,24 @@ const CategoriaFormulario = () => {
         },
         {
             headerName: 'Acciones',
-            width: 150,
+            width: 300,
             renderCell: (params) => (
                 <div>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleEditarCategoria(params.row)}
+                        endIcon={<EditIcon />}
+                    >
+                        Modificar
+                    </Button>
                     <Button
                         variant="contained"
                         color='error'
                         onClick={() => handleEliminarCategoria(params.row.id)
                         }
-                        endIcon={<DeleteIcon/>}
-                        >
+                        endIcon={<DeleteIcon />}
+                    >
                         Eliminar
                     </Button>
                 </div>
@@ -124,12 +159,12 @@ const CategoriaFormulario = () => {
                     color="primary"
                     sx={{ marginRight: "2%", marginLeft: "2%", marginTop: "2.5%" }}
                 >
-                    Crear Categoria
+                    Guardar
                 </Button>
             </form>
             <Box>
 
-                <Paper elevation={5} sx={{ marginX: "25%", marginTop: 5, alignSelf: "center" }}>
+                <Paper elevation={5} sx={{ marginX: "10%", marginTop: 5, alignSelf: "center" }}>
                     <DataGrid
                         rows={lista ? lista.map((item) => ({ ...item, id: item._id })) : []}
                         columns={columns}
@@ -140,11 +175,11 @@ const CategoriaFormulario = () => {
                 </Paper>
             </Box>
             <Box
-            sx={{marginTop: "5%", marginX: "15%"}}
+                sx={{ marginTop: "5%", marginX: "50%" }}
             >
-            <Button variant="contained" color="primary" onClick={handleClick}>
-                Atrás
-            </Button>
+                <Button variant="contained" color="primary" onClick={handleClick}>
+                    Atrás
+                </Button>
             </Box>
         </div>
 

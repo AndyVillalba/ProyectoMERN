@@ -38,6 +38,25 @@ export const crearProducto = async (productoDatos) => {
       }
 }
 
+export const modificarProducto = async (datosProducto, idProducto) => {
+    const respuesta = await fetch(`${API_URL}/producto/${idProducto}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datosProducto),
+    });
+
+    if (!respuesta.ok) {
+      throw new Error(`Error al actualizar producto: ${respuesta.statusText}`);
+    }
+
+    const datosRespuesta = await respuesta.json();
+    return datosRespuesta;
+};
+
+
+
 export const consultarProductosRegistrados = async () => {
   let p
   await fetch(`${API_URL}/producto`)
@@ -96,3 +115,20 @@ export const eliminarCategoria = async (id) => {
   return await fetch(`${API_URL}/categoria/${id}`, {
     method: 'DELETE'})
 }
+
+export const modificarCategoria = async (datosProducto, idProducto) => {
+  const respuesta = await fetch(`${API_URL}/categoria/${idProducto}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(datosProducto),
+  });
+
+  if (!respuesta.ok) {
+    throw new Error(`Error al actualizar producto: ${respuesta.statusText}`);
+  }
+
+  const datosRespuesta = await respuesta.json();
+  return datosRespuesta;
+};
